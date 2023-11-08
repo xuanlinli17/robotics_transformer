@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tensorflow based methods for sequence agents."""
-from typing import Optional, Tuple, Union, Any
+from typing import Optional, Tuple, Union, Any, List, Dict
 
 from absl import logging
 import numpy as np
@@ -46,9 +46,9 @@ class TransformerNetwork(network.Network):
       dropout_rate: float = 0.1,
       time_sequence_length: int = 1,
       crop_size: int = 236,
-      policy_info_spec: Optional[dict[Any,
+      policy_info_spec: Optional[Dict[Any,
                                       tensor_spec.BoundedTensorSpec]] = None,
-      action_order: Optional[list[str]] = None,
+      action_order: Optional[List[str]] = None,
       use_token_learner: Optional[bool] = True,
       return_attention_scores: bool = False,
       **kwargs):
@@ -146,7 +146,7 @@ class TransformerNetwork(network.Network):
     }
 
   @property
-  def attention_scores(self) -> list[tf.Tensor]:
+  def attention_scores(self) -> List[tf.Tensor]:
     """Return attention score. This is for debugging/visualization purpose."""
     return self._attention_scores
 
@@ -243,8 +243,8 @@ class TransformerNetwork(network.Network):
     return output_tokens
 
   def _get_tokens_and_mask(self,
-                           observations: dict[str, tf.Tensor],
-                           network_state: dict[str, tf.Tensor],
+                           observations: Dict[str, tf.Tensor],
+                           network_state: Dict[str, tf.Tensor],
                            training: bool = False):
     # tokenize all inputs
     context_image_tokens, network_state = self._tokenize_images(
@@ -270,8 +270,8 @@ class TransformerNetwork(network.Network):
     return token, token_logits
 
   def call(self,
-           observations: dict[str, tf.Tensor],
-           network_state: dict[str, tf.Tensor],
+           observations: Dict[str, tf.Tensor],
+           network_state: Dict[str, tf.Tensor],
            training: bool = False):
     """Calls the transformer network.
 
@@ -404,8 +404,8 @@ class TransformerNetwork(network.Network):
         predicted_tokens_for_output)
     return output_actions, network_state
 
-  def add_summaries(self, observations: dict[str, tf.Tensor],
-                    logging_info: dict[str, tf.Tensor], debug_summaries: bool,
+  def add_summaries(self, observations: Dict[str, tf.Tensor],
+                    logging_info: Dict[str, tf.Tensor], debug_summaries: bool,
                     training: bool) -> None:
     """Adds summaries.
 
@@ -680,5 +680,5 @@ class TransformerNetwork(network.Network):
   def get_actor_loss(self) -> tf.Tensor:
     return self._loss
 
-  def get_aux_info(self) -> dict[str, Any]:
+  def get_aux_info(self) -> Dict[str, Any]:
     return self._aux_info

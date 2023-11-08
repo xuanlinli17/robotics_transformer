@@ -14,7 +14,7 @@
 """Tests for networks."""
 
 import copy
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, List, Dict
 
 from absl.testing import parameterized
 import numpy as np
@@ -32,12 +32,12 @@ WIDTH = 320
 NUM_IMAGE_TOKENS = 2
 
 
-def spec_names_list() -> list[str]:
+def spec_names_list() -> List[str]:
   """Lists the different types of specs accepted by the transformer."""
   return ['default']
 
 
-def state_spec_list() -> list[tensorspec_utils.TensorSpecStruct]:
+def state_spec_list() -> List[tensorspec_utils.TensorSpecStruct]:
   """Lists the different types of state spec accepted by the transformer."""
   state_spec = tensorspec_utils.TensorSpecStruct()
   state_spec.image = tensor_spec.BoundedTensorSpec([HEIGHT, WIDTH, 3],
@@ -71,7 +71,7 @@ def state_spec_list() -> list[tensorspec_utils.TensorSpecStruct]:
   ]
 
 
-def observations_list(training: bool = True) -> list[dict[str, tf.Tensor]]:
+def observations_list(training: bool = True) -> List[Dict[str, tf.Tensor]]:
   """Lists the different types of observations accepted by the transformer."""
   if training:
     image_shape = [BATCH_SIZE, TIME_SEQUENCE_LENGTH, HEIGHT, WIDTH, 3]
@@ -301,7 +301,7 @@ class TransformerNetworkTestUtils(tf.test.TestCase, parameterized.TestCase):
         tf.one_hot(value % vocab_size, vocab_size)[tf.newaxis, tf.newaxis, :],
         [batch_size, 1, vocab_size])
 
-  def create_obs(self, value) -> dict[str, tf.Tensor]:
+  def create_obs(self, value) -> Dict[str, tf.Tensor]:
     observations = {}
     observations['image'] = value * self._inference_observation['image']
     observations[
@@ -318,7 +318,7 @@ class TransformerNetworkTestUtils(tf.test.TestCase, parameterized.TestCase):
 
   def fake_transformer(
       self, all_tokens, training,
-      attention_mask) -> Union[tf.Tensor, Tuple[tf.Tensor, list[tf.Tensor]]]:
+      attention_mask) -> Union[tf.Tensor, Tuple[tf.Tensor, List[tf.Tensor]]]:
     """Fakes the call to TransformerNetwork._transformer."""
     del training
     del attention_mask

@@ -131,7 +131,7 @@ class Transformer(tf.keras.layers.Layer):
       x: tf.Tensor,
       training: bool,
       attention_mask: tf.Tensor,
-  ) -> Union[tf.Tensor, Tuple[tf.Tensor, list[tf.Tensor]]]:
+  ) -> Union[tf.Tensor, Tuple[tf.Tensor, List[tf.Tensor]]]:
     """Calls the layer.
 
     Args:
